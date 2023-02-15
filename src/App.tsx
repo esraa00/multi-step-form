@@ -30,8 +30,6 @@ const App = () => {
 
   const [formData, setFormData] = useState(INITIAL_DATA);
 
-  console.log(formData);
-
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -55,7 +53,10 @@ const App = () => {
 
   function submitHandler(event: FormEvent) {
     event.preventDefault();
-    next();
+    if (!isLastStep) {
+      return next();
+    }
+    alert("successful account creation");
   }
   return (
     <div
@@ -64,9 +65,10 @@ const App = () => {
         background: "white",
         border: "1px solid black",
         padding: "2rem",
-        margin: "1rem",
+        margin: "1rem auto",
         borderRadius: "0.5rem",
         fontFamily: "Arial",
+        maxWidth: "max-content",
       }}
     >
       <form onSubmit={submitHandler}>
