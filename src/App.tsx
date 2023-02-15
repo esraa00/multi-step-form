@@ -1,9 +1,44 @@
+import { FormEvent, useState } from "react";
 import AccountForm from "./AccountForm";
 import AddressForm from "./AddressForm";
 import { useMultiStepForm } from "./useMultiStepForm";
 import UserForm from "./UserForm";
 
+type FormData = {
+  firstName: string;
+  lastName: string;
+  age: string;
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  email: string;
+  password: string;
+};
 const App = () => {
+  const INITIAL_DATA: FormData = {
+    firstName: "",
+    lastName: "",
+    age: "",
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+    email: "",
+    password: "",
+  };
+
+  const [formData, setFormData] = useState(INITIAL_DATA);
+
+  console.log(formData);
+
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
   const {
     forms,
     currentFormIndex,
@@ -12,7 +47,16 @@ const App = () => {
     back,
     isFirstStep,
     isLastStep,
-  } = useMultiStepForm([<UserForm />, <AddressForm />, <AccountForm />]);
+  } = useMultiStepForm([
+    <UserForm {...formData} hangleOnChange={handleOnChange} />,
+    <AddressForm {...formData} handleOnChange={handleOnChange} />,
+    <AccountForm {...formData} handleOnChange={handleOnChange} />,
+  ]);
+
+  function submitHandler(event: FormEvent) {
+    event.preventDefault();
+    next();
+  }
   return (
     <div
       style={{
@@ -25,7 +69,7 @@ const App = () => {
         fontFamily: "Arial",
       }}
     >
-      <form>
+      <form onSubmit={submitHandler}>
         <div
           style={{
             position: "absolute",
@@ -49,9 +93,7 @@ const App = () => {
               back
             </button>
           )}
-          <button type="button" onClick={next}>
-            {isLastStep ? "submit" : "next"}
-          </button>
+          <button type="submit">{isLastStep ? "submit" : "next"}</button>
         </div>
       </form>
     </div>
